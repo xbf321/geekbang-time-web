@@ -11,17 +11,6 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss'
   ],
-  runtimeConfig: {
-    private: {
-      dbConfig: {
-        host: '127.0.0.1',
-        port: 5432,
-        database: 'geekbang_web',
-        user: 'postgres',
-        password: 'sasasa',
-      },
-    },
-  },
   experimental: {
     componentIslands: true,
   },

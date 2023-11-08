@@ -6,7 +6,7 @@
       </h1>
       <ul class="mb-3 ml-3 list-inside">
         <li class="mb-2" v-for="item in chapter.children" :key="item.id">
-          <a class="block hover:underline hover:text-orange-400" :href="'/detail.html?id=' + item.id">{{ item.title }}</a>
+          <a class="block hover:underline hover:text-orange-400" :href="'/detail.html?id=' + item.id" :class="Number(articleId) === Number(item.id) ? 'text-orange-500 underline' : ''">{{ item.title }}</a>
           <span v-if="item.time" class="text-sm text-gray-400">时长：{{ item.time  }}</span>
         </li>
       </ul>
@@ -28,7 +28,7 @@
       default: () => {},
     },
     articleId: {
-      type: Number,
+      type: String,
       default: 0,
     },
   });
