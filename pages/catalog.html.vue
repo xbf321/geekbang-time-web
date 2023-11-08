@@ -1,15 +1,14 @@
 <template>
   <div class="my-2">
-    <h1 class="text-3xl font-medium my-1">{{ courseInfo.title }}</h1>
-    <h2 class="text-sm mb-1 text-gray-600">{{ courseInfo.subtitle }}</h2>
-    <div class="text-xs mb-1 text-gray-400">
+    <h1 class="text-3xl font-medium my-1">{{ author.name }}：{{ title }}</h1>
+    <h2 class="text-sm mb-1 text-gray-600">{{ subtitle }}</h2>
+    <div class="text-sm mb-1 text-gray-500">
       <div class="mb-1">
-        <span class="mr-2">{{ courseInfo.author.name }}</span>
-        <span>{{ courseInfo.author.intro }}</span>
+        <span>{{ author.intro }}</span>
       </div>
-      <div>{{ courseInfo.author.brief}} </div>
+      <div>{{ author.brief }}</div>
     </div>
-    <div class="text-xs mb-2 text-gray-500">共{{ courseInfo.unit }}</div>
+    <div class="text-sm mb-2 text-gray-400">{{ renderUnit(count_pub || 0, count || 0) }}</div>
     <div class="tab mb-2">
       <div class="flex">
         <div
@@ -40,35 +39,35 @@
     <template v-if="selectedTabIndex === 0">
       <div
         class="leading-6 content"
-        v-html="introContent && introContent.content || ''"
+        v-html="replaceImageTag(introContent || '') || ''"
       />
-      <h3 class="font-medium my-2">课程目录</h3>
-      <div><img :src="courseInfo.column.catalog_pic_url" /></div>
     </template>
     <template v-else>
+      <span v-if="chapters.length === 0">loading...</span>
       <ChapterListStaticHtml :data="chapters" />
     </template>
-    
   </div>
 </template>
 <script setup>
 definePageMeta({
   layout: "only-with-header",
 });
-const route = useRoute();
-
 const selectedTabIndex = ref(0);
-const chapters = ref([]);
-
+const chapters = reactive({
+  chapters: [],
+  articles: [],
+});
+const route = useRoute();
 const { courseId } = route.query;
 const { data: courseInfo } = await useFetch("/api/course-detail", {
   query: {
     courseId,
-  }
+  },
 });
-
-const { title: pageTitle, seo } = courseInfo.value;
-const pageDescription = seo.keywords.join(',');
+const { title, raw_data: rawData } = courseInfo.value;
+const { subtitle, author, seo, extra, article } = rawData;
+const { count_pub, count } = article || {};
+const pageDescription = seo?.keywords?.join(",") || "";
 
 watch(selectedTabIndex, (value) => {
   if (value === 1) {
@@ -77,33 +76,36 @@ watch(selectedTabIndex, (value) => {
 });
 
 useSeoMeta({
-  title: pageTitle,
-  ogTitle: pageTitle,
+  title,
+  ogTitle: title,
   description: pageDescription,
   ogDescription: pageDescription,
-})
+});
 
-const introContent = computed(() =>
-  courseInfo.value.extra.modules.find(
-    (module) => module.name === "class_intro"
-  )
-);
+const introContent = computed(() => {
+  const { modules } = extra || {};
+  const result = (modules || []).filter((module) => module.name === 'class_intro' || module.name === 'class_menu');
+  const html = [];
+  (result || []).map((item) => {
+    html.push(`<h1 class="mb-2 text-xl font-bold">${item.title}</h1>`);
+    html.push(`<div>${item.content}</div>`);
+  });
+  return html.join('');
+});
 
 function onChangeTab(index) {
   selectedTabIndex.value = index;
 }
 
 async function fetchChapters() {
-  const { data } = await useFetch("/api/chapters", {
+  const { data } = await useFetch("/api/chapter-list-by-course", {
     query: {
       courseId,
     },
     server: false,
   });
-  chapters.value = data.value;
+  Object.assign(chapters, data.value);
 }
-
-
 </script>
 
 <style scoped lang="scss">

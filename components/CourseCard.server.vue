@@ -1,23 +1,31 @@
 <template>
   <div class="course-card bg-white rounded flex p-2">
     <div class="cover-wrapper flex-none overflow-hidden rounded-md">
-      <img class="cover" :src="rectangle" />
+      <img class="cover" :src="attachmentProxy(rectangle)" />
     </div>
     <div class="flex flex-col pl-2  w-full">
-      <h1 class="font-medium mb-1 line-clamp-1 leading-5"><a class="hover:underline hover:text-orange-400" :href="'/catalog.html?courseId=' + id">{{ title }}</a></h1>
+      <h1 class="font-medium mb-1 line-clamp-2 leading-5"><a class="hover:underline hover:text-orange-400" :href="courseHref">{{ name }}：{{ title }}</a></h1>
       <div class="text-xs rounded bg-gray-100 p-1 mb-1 text-gray-400 line-clamp-2 subtitle">{{ subtitle }}</div>
-      <div class="text-xs rounded bg-gray-100 p-1 mb-1 text-gray-400 name">{{ name }}</div>
-      <div class="text-xs rounded bg-gray-100 p-1 mb-1 text-gray-400 line-clamp-1 intro">{{ intro }}</div>
-      <div class="text-xs text-gray-500">{{ unit }}</div>
+      <div class="text-xs rounded bg-gray-100 p-1 mb-2 text-gray-400 line-clamp-1 intro">{{ intro }}</div>
+      <div class="text-xs text-gray-500">{{ renderUnit(count_pub || 0, count || 0) }}</div>
     </div>
   </div>
 </template>
 <script setup>
   const nuxtApp = useNuxtApp();
   const { props } = nuxtApp.ssrContext.islandContext;
-  const { title, subtitle, author, cover, article, id, unit } = props.data;
+  const { id, title, raw_data: rawData } = props.data;
+  const { subtitle, author, cover, unit, article, is_opencourse, type } = rawData;
   const { name, intro } = author;
   const { rectangle } = cover;
+  const { count_pub, count } = article || {};
+  const courseHref = computed(() => {
+    // type: 30 -> opensource-video.html 没有目录
+    if (is_opencourse === true && type === 'p30') {
+      return `/opensource-video.html?courseId=${id}`;
+    }
+    return `/catalog.html?courseId=${id}`;
+  });
 </script>
 <style scoped lang="scss">
 .course-card {

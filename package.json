@@ -3,10 +3,7 @@
   "private": false,
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "dev": "nuxt dev"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.8.0",
@@ -14,6 +11,8 @@
     "sass": "^1.66.1"
   },
   "dependencies": {
-    "pg": "^8.11.3"
+    "get-stream": "^8.0.1",
+    "pg": "^8.11.3",
+    "video.js": "^8.6.1"
   }
 }
