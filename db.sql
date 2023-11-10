@@ -7,13 +7,12 @@ CREATE TABLE IF NOT EXISTS public.articles
     chapter_source_id integer NOT NULL DEFAULT 0,
     raw_data json NOT NULL DEFAULT '{}'::json,
     ctime bigint DEFAULT 0,
-    video_info json,
     CONSTRAINT articles_pkey PRIMARY KEY (id)
 )
 
 CREATE TABLE IF NOT EXISTS public.chapters
 (
-    id character varying(10) COLLATE pg_catalog."default" NOT NULL DEFAULT ''::character varying,
+    id integer NOT NULL DEFAULT 0,
     source_id integer NOT NULL DEFAULT 0,
     title character varying(50) COLLATE pg_catalog."default" NOT NULL DEFAULT ''::character varying,
     article_count integer NOT NULL DEFAULT 0,
@@ -26,7 +25,6 @@ CREATE TABLE IF NOT EXISTS public.courses
     id integer NOT NULL DEFAULT 0,
     title character varying(50) COLLATE pg_catalog."default" NOT NULL DEFAULT ''::character varying,
     labels integer[],
-    raw_data_from_list json,
     ctime bigint NOT NULL DEFAULT 0,
     utime bigint NOT NULL DEFAULT 0,
     raw_data json,

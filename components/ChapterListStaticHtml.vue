@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col flex-wrap">
     <template v-if="showChapter" v-for="chapter in mergeArticlesInChapters" :key="chapter.id">
-      <h1 class="mb-1 font-medium">
+      <h1 class="mb-2 font-medium">
         {{ chapter.title }}({{ chapter.article_count }}讲)
       </h1>
       <ul class="mb-3 ml-3 list-inside">

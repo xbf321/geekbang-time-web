@@ -49,73 +49,98 @@
   </div>
 </template>
 <script setup>
-definePageMeta({
-  layout: "only-with-header",
-});
-const selectedTabIndex = ref(0);
-const chapters = reactive({
-  chapters: [],
-  articles: [],
-});
-const route = useRoute();
-const { courseId } = route.query;
-const { data: courseInfo } = await useFetch("/api/course-detail", {
-  query: {
-    courseId,
-  },
-});
-const { title, raw_data: rawData } = courseInfo.value;
-const { subtitle, author, seo, extra, article } = rawData;
-const { count_pub, count } = article || {};
-const pageDescription = seo?.keywords?.join(",") || "";
-
-watch(selectedTabIndex, (value) => {
-  if (value === 1) {
-    fetchChapters();
-  }
-});
-
-useSeoMeta({
-  title,
-  ogTitle: title,
-  description: pageDescription,
-  ogDescription: pageDescription,
-});
-
-const introContent = computed(() => {
-  const { modules } = extra || {};
-  const result = (modules || []).filter((module) => module.name === 'class_intro' || module.name === 'class_menu');
-  const html = [];
-  (result || []).map((item) => {
-    html.push(`<h1 class="mb-2 text-xl font-bold">${item.title}</h1>`);
-    html.push(`<div>${item.content}</div>`);
+  definePageMeta({
+    layout: 'only-with-header',
   });
-  return html.join('');
-});
-
-function onChangeTab(index) {
-  selectedTabIndex.value = index;
-}
-
-async function fetchChapters() {
-  const { data } = await useFetch("/api/chapter-list-by-course", {
+  const selectedTabIndex = ref(0);
+  const chapters = reactive({
+    chapters: [],
+    articles: [],
+  });
+  const route = useRoute();
+  const { courseId } = route.query;
+  const { data: courseInfo } = await useFetch('/api/course-detail', {
     query: {
       courseId,
     },
-    server: false,
+    transform: (item) => {
+      const { id, title, raw_data: originRawData } = item;
+      const { subtitle, author, seo, extra, article } = originRawData;
+      const result = {
+        id,
+        title,
+        raw_data: {
+          subtitle,
+          author: {
+            name: author.name,
+            info: author.info,
+            brief: author.brief,
+          },
+          seo,
+          extra: {
+            modules: extra.modules,
+          },
+          article: {
+            count_pub: article.count_pub,
+            count: article.count,
+          },
+        }
+      };
+      return result;
+    },
   });
-  Object.assign(chapters, data.value);
-}
+  const { title, raw_data: rawData } = courseInfo.value;
+  const { subtitle, author, seo, extra, article } = rawData;
+  const { count_pub, count } = article || {};
+  const pageDescription = seo?.keywords?.join(',') || '';
+
+  useSeoMeta({
+    title,
+    ogTitle: title,
+    description: pageDescription,
+    ogDescription: pageDescription,
+  });
+
+  watch(selectedTabIndex, (value) => {
+    if (value === 1) {
+      fetchChapters();
+    }
+  });
+
+  const introContent = computed(() => {
+    const { modules } = extra || {};
+    const result = (modules || []).filter((module) => module.name === 'class_intro' || module.name === 'class_menu');
+    const html = [];
+    (result || []).map((item) => {
+      html.push(`<h1 class="mb-2 text-xl font-bold">${item.title}</h1>`);
+      html.push(`<div>${item.content}</div>`);
+    });
+    return html.join('');
+  });
+
+  function onChangeTab(index) {
+    selectedTabIndex.value = index;
+  }
+
+  async function fetchChapters() {
+    const { data } = await useFetch('/api/chapter-list-by-course', {
+      query: {
+        courseId,
+      },
+      server: false,
+    });
+    Object.assign(chapters, data.value);
+  }
 </script>
 
 <style scoped lang="scss">
-.content {
-  :deep(p) {
-    margin-bottom: 16px;
+  .content {
+    :deep(p) {
+      margin-bottom: 16px;
+    }
+    :deep(h2) {
+      font-weight: 600;
+      font-size: 14px;
+    }
   }
-  :deep(h2) {
-    font-weight: 600;
-    font-size: 14px;
-  }
-}
 </style>

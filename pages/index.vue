@@ -4,6 +4,6 @@
   </div>
 </template>
 <script setup>
-const route = useRoute();
-const { pageIndex, did, cid } = route.query;
+  const route = useRoute();
+  const { pageIndex, did, cid } = route.query;
 </script>

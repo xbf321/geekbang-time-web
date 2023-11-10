@@ -5,11 +5,8 @@ export default defineEventHandler(async (event) => {
   const { src } = query;
   return proxyRequest(event, src, {
     fetch,
-    headers: { "referer": "https://time.geekbang.org/resource?m=0&d=3&c=0" },
-    fetchOptions: {
-      headers: {
-        'referer': 'https://time.geekbang.org/opencourse/detail/100067401',
-      }
-    }
+    headers: {
+      referer: "https://time.geekbang.org/resource",
+    },
   });
 });

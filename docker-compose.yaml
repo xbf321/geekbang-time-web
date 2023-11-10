@@ -1,9 +1,6 @@
 version: '3.9'
 services:
   geekbang-time-web:
-    build:
-      context: .
-      dockerfile: Dockerfile
     image: xbf321/geekbang-time-web
     container_name: geekbang-time-web
     restart: unless-stopped

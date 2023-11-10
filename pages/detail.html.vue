@@ -10,25 +10,10 @@
   </div>
 </template>
 <script setup>
-import videojs from "video.js";
-import "video.js/dist/video-js.css";
-definePageMeta({
-  layout: "full-screen",
-});
-
-const route = useRoute();
-const { id } = route.query;
-const initVideoPlayer = () => {
-  try {
-    videojs('video-player');
-  } catch(err) {
-    // do nothing
-  }
-  
-};
-onMounted(() => {
-  nextTick(() => {
-    initVideoPlayer();
+  definePageMeta({
+    layout: 'full-screen',
   });
-});
+
+  const route = useRoute();
+  const { id } = route.query;
 </script>

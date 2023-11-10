@@ -27,53 +27,53 @@
   </div>
 </template>
 <script setup>
-const nuxtApp = useNuxtApp();
-const { props } = nuxtApp.ssrContext.islandContext;
-const { data: allLabels } = await useFetch("/api/labels");
-let { did, cid } = props;
-const direction = computed(() => {
-  let list = allLabels.value
-    .filter((item) => item.pid === 0);
-  list.unshift({
-    lid: 0,
-    name: "全部",
-  });
-  const itemByCid = allLabels.value.find((item) => item.lid === cid);
-  if (itemByCid) {
-    did = itemByCid.pid;
-  }
-  list = list.map((item) => {
-    const { lid, name } = item;
-    const selected = did === lid;
-    return {
-      lid,
-      name,
-      selected,
-    };
-  });
-  return list;
-});
-const categories = computed(() => {
-  let list = allLabels.value
-    .filter((item) => {
-      if (did === 0) {
-        return item.pid !== 0;
-      }
-      return item.pid === did;
+  const nuxtApp = useNuxtApp();
+  const { props } = nuxtApp.ssrContext.islandContext;
+  const { data: allLabels } = await useFetch('/api/labels');
+  let { did, cid } = props;
+  const direction = computed(() => {
+    let list = allLabels.value
+      .filter((item) => item.pid === 0);
+    list.unshift({
+      lid: 0,
+      name: '全部',
     });
-  list.unshift({
-    lid: 0,
-    name: "全部",
+    const itemByCid = allLabels.value.find((item) => item.lid === cid);
+    if (itemByCid) {
+      did = itemByCid.pid;
+    }
+    list = list.map((item) => {
+      const { lid, name } = item;
+      const selected = did === lid;
+      return {
+        lid,
+        name,
+        selected,
+      };
+    });
+    return list;
   });
-  list = list.map((item) => {
-    const { lid, name } = item;
-    const selected = cid === lid;
-    return {
-      lid,
-      name,
-      selected,
-    };
+  const categories = computed(() => {
+    let list = allLabels.value
+      .filter((item) => {
+        if (did === 0) {
+          return item.pid !== 0;
+        }
+        return item.pid === did;
+      });
+    list.unshift({
+      lid: 0,
+      name: '全部',
+    });
+    list = list.map((item) => {
+      const { lid, name } = item;
+      const selected = cid === lid;
+      return {
+        lid,
+        name,
+        selected,
+      };
+    });
+    return list;
   });
-  return list;
-});
 </script>

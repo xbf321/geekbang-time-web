@@ -6,8 +6,8 @@
   </div>
 </template>
 <script setup>
-const route = useRoute();
-let { cid = 0, did = 0 } = route.query;
-cid = parseInt(cid, 0);
-did = parseInt(did, 0);
+  const route = useRoute();
+  let { cid = 0, did = 0 } = route.query;
+  cid = parseInt(cid, 0);
+  did = parseInt(did, 0);
 </script>

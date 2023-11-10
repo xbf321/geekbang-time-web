@@ -20,7 +20,7 @@ class ChapterService {
     
     return {
       chapters: chapterResponse.rows,
-      articles
+      articles,
     };
   }
 

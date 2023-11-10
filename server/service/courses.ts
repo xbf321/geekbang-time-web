@@ -33,7 +33,7 @@ class CourseService {
   }
   async detail(course_id) {
     const result = await this.db.query("SELECT id, title, raw_data FROM courses WHERE id = $1", [course_id]);
-    return result.rows[0];
+    return result.rows[0] || {};
   }
 };
 

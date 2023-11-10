@@ -9,26 +9,6 @@
       <div class="text-sm text-gray-400 mb-2">
         {{ articleInfo.author_name }}
       </div>
-      <template v-if="videoInfo.url">
-        <video
-          id="video-player"
-          class="video-js w-full h-96 mb-3"
-          controls
-          preload="auto"
-          :poster="videoInfo.previewImageUrl"
-        >
-          <source :src="videoInfo.url" type="application/x-mpegURL" />
-          <p class="vjs-no-js">
-            To view this video please enable JavaScript, and consider upgrading to a
-            web browser that<a
-              href="https://videojs.com/html5-video-support/"
-              target="_blank"
-              >supports HTML5 video</a
-            >
-          </p>
-        </video>
-      </template>
-      
       <template v-if="articleInfo.article_cover">
         <img
           class="rounded-lg max-h-80 mb-2"
@@ -40,88 +20,99 @@
         <source :src="attachmentProxy(articleInfo.audio_download_url)" type="audio/mpeg">
         <embed height="50" width="100" :src="attachmentProxy(articleInfo.audio_download_url)">
       </audio>
+      <div class="py-3 font-bold text-red-700 course-content" v-if="['p30', 'p35'].includes(articleInfo.product_type)">
+        此课程为视频内容，请去官网查观看，-> 
+        <template v-if="articleInfo.product_type === 'p30'">
+          <a target="_blank" :href="'https://time.geekbang.org/opencourse/detail/' + courseId">去官网</a>。
+        </template>
+        <template v-if="articleInfo.product_type === 'p35'">
+          <a target="_blank" :href="'https://time.geekbang.org/course/detail/'+ courseId + '-' + id">去官网</a>。
+        </template>
+      </div>
       <div
         class="leading-7 course-content"
-        v-html="replaceImageTag(articleInfo.article_content)"
+        v-html="replaceImageTag(articleInfo.article_content || articleInfo.article_content_short)"
       />
     </div>
   </div>
 </template>
 <script setup>
-const nuxtApp = useNuxtApp();
-const { props } = nuxtApp.ssrContext.islandContext;
-const { id } = props;
-const videoInfo = reactive({
-  url: '',
-  previewImageUrl: '',
-});
-const { data: courseDetail } = await useFetch("/api/article-detail", {
-  query: {
-    id,
-  }
-});
-const { raw_data: articleInfo, course_id: courseId, course_title: courseTitle } = courseDetail.value;
-const { video_cover, hls_videos } =articleInfo || {};
-videoInfo.previewImageUrl = attachmentProxy(video_cover);
-videoInfo.url = hls_videos?.ld?.url || '';
+  const nuxtApp = useNuxtApp();
+  const { props } = nuxtApp.ssrContext.islandContext;
+  const { id } = props;
+  const { data: courseDetail } = await useFetch('/api/article-detail', {
+    query: {
+      id,
+    }
+  });
+  const { raw_data: articleInfo, course_id: courseId, course_title: courseTitle } = courseDetail.value;
 </script>
 <style scoped lang="scss">
-.menu.icon {
-  width: 17px;
-  height: 1px;
-  background-color: currentColor;
-}
+  .menu.icon {
+    width: 17px;
+    height: 1px;
+    background-color: currentColor;
+  }
 
-.menu.icon:before {
-  content: '';
-  position: absolute;
-  top: -5px;
-  left: 0;
-  width: 17px;
-  height: 1px;
-  background-color: currentColor;
-}
+  .menu.icon:before {
+    content: '';
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 17px;
+    height: 1px;
+    background-color: currentColor;
+  }
 
-.menu.icon:after {
-  content: '';
-  position: absolute;
-  top: 5px;
-  left: 0;
-  width: 17px;
-  height: 1px;
-  background-color: currentColor;
-}
+  .menu.icon:after {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: 0;
+    width: 17px;
+    height: 1px;
+    background-color: currentColor;
+  }
 
-
-.course-content {
-  :deep(a) {
-    color: rgb(249 115 22);
-    text-decoration: underline;
+  .course-content {
+    :deep(a) {
+      color: rgb(249 115 22);
+      text-decoration: underline;
+    }
+    :deep(p) {
+      margin-bottom: 16px;
+    }
+    :deep(ul) {
+      list-style: disc;
+      margin-left: 26px;
+      margin-bottom: 10px;
+    }
+    :deep(h2) {
+      font-size: 18px;
+      padding: 10px 0;
+      font-weight: 500;
+    }
+    :deep(h3) {
+      font-size: 16px;
+      padding: 10px 0;
+      font-weight: 500;
+    }
+    :deep(img) {
+      border: 1px solid gray;
+      margin: 10px 0;
+      max-width: 80%;
+      border-radius: 6px;
+      background-color: #eee;
+    }
+    :deep(pre) {
+      padding: 16px;
+      overflow: auto;
+      font-size: 85%;
+      line-height: 1.45;
+      background-color: rgb(22, 27, 34);
+      border-radius: 6px;
+      margin-bottom: 16px;
+      color: #fff;
+    }
   }
-  :deep(p) {
-    margin-bottom: 16px;
-  }
-  :deep(ul) {
-    list-style: disc;
-    margin-left: 26px;
-    margin-bottom: 10px;
-  }
-  :deep(h2) {
-    font-size: 18px;
-    padding: 10px 0;
-    font-weight: 500;
-  }
-  :deep(h3) {
-    font-size: 16px;
-    padding: 10px 0;
-    font-weight: 500;
-  }
-  :deep(img) {
-    border: 1px solid gray;
-    margin: 10px 0;
-    max-width: 80%;
-    border-radius: 6px;
-    background-color: #eee;
-  }
-}
 </style>

@@ -17,44 +17,43 @@
   </div>
 </template>
 <script setup>
-const nuxtApp = useNuxtApp();
-const { props } = nuxtApp.ssrContext.islandContext;
-const { did, cid, pageIndex } = props;
-const pageSize = 32;
-const { data: response } = await useFetch("/api/course-list", {
-  query: {
-    did,
-    cid,
-    pageIndex,
-    pageSize,
-  }
-});
-const { total, list } = response.value;
-const totalPages = computed(() => {
-  return Math.ceil(total / pageSize)
-});
-const previousPage = computed(() => {
-  if (currentPage.value - 1 <= 1) {
-    return 1;
-  }
-  return currentPage.value - 1;
-});
+  const nuxtApp = useNuxtApp();
+  const { props } = nuxtApp.ssrContext.islandContext;
+  const { did, cid, pageIndex } = props;
+  const pageSize = 32;
+  const { data: response } = await useFetch('/api/course-list', {
+    query: {
+      did,
+      cid,
+      pageIndex,
+      pageSize,
+    }
+  });
+  const { total, list } = response.value;
+  const totalPages = computed(() => {
+    return Math.ceil(total / pageSize)
+  });
+  const previousPage = computed(() => {
+    if (currentPage.value - 1 <= 1) {
+      return 1;
+    }
+    return currentPage.value - 1;
+  });
 
-const currentPage = computed(() => {
-  if (!pageIndex) {
-    return 1;
-  }
-  if (Number(pageIndex) > totalPages.value) {
-    return totalPages.value;
-  }
-  return Number(pageIndex);
-});
+  const currentPage = computed(() => {
+    if (!pageIndex) {
+      return 1;
+    }
+    if (Number(pageIndex) > totalPages.value) {
+      return totalPages.value;
+    }
+    return Number(pageIndex);
+  });
 
-const nextPage = computed(() => {
-  if (currentPage.value + 1 > totalPages.value) {
-    return totalPages.value;
-  }
-  return currentPage.value + 1;
-});
-
+  const nextPage = computed(() => {
+    if (currentPage.value + 1 > totalPages.value) {
+      return totalPages.value;
+    }
+    return currentPage.value + 1;
+  });
 </script>
