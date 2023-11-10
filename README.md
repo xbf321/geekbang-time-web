@@ -28,3 +28,10 @@ Start the development server on `http://localhost:7050`:
 # yarn
 yarn dev
 ```
+
+## Push to docker
+
+```shell
+docker build -t xbf321/geekbang-time-web .
+docker push xbf321/geekbang-time-web:latest
+```

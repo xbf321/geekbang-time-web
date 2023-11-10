@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   geekbang-time-web:
-    image: xbf321/geekbang-time-web
+    image: xbf321/geekbang-time-web:latest
     container_name: geekbang-time-web
     restart: unless-stopped
     ports:

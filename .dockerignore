@@ -1,0 +1,16 @@
+npm-debug.log
+yarn-error.log
+node_modules
+tsconfig.json
+jsconfig.json
+logs
+package-lock.json
+.prettierrc.json
+db.sql
+docker-compose.yaml
+.gitignore
+.git
+.github
+*.lock
+.nuxt/*
+.DS_Store
